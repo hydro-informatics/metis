@@ -2,7 +2,7 @@
 
 ***
 
-**NOTE**: This fork serves for compiling Telemac as described on [https://hydro-informatics/get-started/install-telemac](https://hydro-informatics.com/get-started/install-telemac.html). The differences comapred with original version developed on [KarypisLab/METIS](https://github.com/KarypisLab/METIS), this repository:
+**NOTE**: This fork serves for compiling Telemac as described on [https://hydro-informatics/get-started/install-telemac](https://hydro-informatics.com/get-started/install-telemac.html). The differences compared with original version developed on [KarypisLab/METIS](https://github.com/KarypisLab/METIS) are:
 
 * Provides Metis version 5.1.1
 * Includes GKlib files
