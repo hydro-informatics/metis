@@ -3,7 +3,7 @@
  *
  * srefine.c
  *
- * This file contains code for the separator refinement algorithms
+ * This file contains code for the separator refinement algortihms
  *
  * Started 8/1/97
  * George

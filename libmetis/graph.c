@@ -129,7 +129,7 @@ void SetupGraph_label(graph_t *graph)
 
 
 /*************************************************************************/
-/*! Setup the various arrays for the split graph */
+/*! Setup the various arrays for the splitted graph */
 /*************************************************************************/
 graph_t *SetupSplitGraph(graph_t *graph, idx_t snvtxs, idx_t snedges)
 {
@@ -141,7 +141,7 @@ graph_t *SetupSplitGraph(graph_t *graph, idx_t snvtxs, idx_t snedges)
   sgraph->nedges = snedges;
   sgraph->ncon   = graph->ncon;
 
-  /* Allocate memory for the split graph */
+  /* Allocate memory for the splitted graph */
   sgraph->xadj        = imalloc(snvtxs+1, "SetupSplitGraph: xadj");
   sgraph->vwgt        = imalloc(sgraph->ncon*snvtxs, "SetupSplitGraph: vwgt");
   sgraph->adjncy      = imalloc(snedges,  "SetupSplitGraph: adjncy");
@@ -225,25 +225,6 @@ void InitGraph(graph_t *graph)
 
 
 /*************************************************************************/
-/*! This function frees the memory storing the structure of the graph */
-/*************************************************************************/
-void FreeSData(graph_t *graph) 
-{
-  /* free graph structure */
-  if (graph->free_xadj)
-    gk_free((void **)&graph->xadj, LTERM);
-  if (graph->free_vwgt)
-    gk_free((void **)&graph->vwgt, LTERM);
-  if (graph->free_vsize)
-    gk_free((void **)&graph->vsize, LTERM);
-  if (graph->free_adjncy)
-    gk_free((void **)&graph->adjncy, LTERM);
-  if (graph->free_adjwgt)
-    gk_free((void **)&graph->adjwgt, LTERM);
-}
-
-
-/*************************************************************************/
 /*! This function frees the refinement/partition memory stored in a graph */
 /*************************************************************************/
 void FreeRData(graph_t *graph) 
@@ -271,10 +252,19 @@ void FreeGraph(graph_t **r_graph)
 
   graph = *r_graph;
 
-  /* free the graph structure's fields */
-  FreeSData(graph);
-
-  /* free the partition/refinement fields */
+  /* free graph structure */
+  if (graph->free_xadj)
+    gk_free((void **)&graph->xadj, LTERM);
+  if (graph->free_vwgt)
+    gk_free((void **)&graph->vwgt, LTERM);
+  if (graph->free_vsize)
+    gk_free((void **)&graph->vsize, LTERM);
+  if (graph->free_adjncy)
+    gk_free((void **)&graph->adjncy, LTERM);
+  if (graph->free_adjwgt)
+    gk_free((void **)&graph->adjwgt, LTERM);
+    
+  /* free partition/refinement structure */
   FreeRData(graph);
 
   gk_free((void **)&graph->tvwgt, &graph->invtvwgt, &graph->label, 

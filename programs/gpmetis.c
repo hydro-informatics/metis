@@ -200,7 +200,7 @@ void GPPrintInfo(params_t *params, graph_t *graph)
       (params->nooutput ? "YES" : "NO")
       );
 
-  printf(" seed=%"PRIDX", niparts=%"PRIDX", niter=%"PRIDX", ncuts=%"PRIDX"\n", 
+  printf(" seed=%"PRIDX", niparts-%"PRIDX", niter=%"PRIDX", ncuts=%"PRIDX"\n", 
       params->seed, params->niparts, params->niter, params->ncuts);
 
   if (params->ubvec) {
@@ -238,15 +238,6 @@ void GPReportResults(params_t *params, graph_t *graph, idx_t *part, idx_t objval
   printf("  Reporting:    \t\t %7.3"PRREAL" sec\n", gk_getcputimer(params->reporttimer));
   printf("\nMemory Information ----------------------------------------------------------\n");
   printf("  Max memory used:\t\t %7.3"PRREAL" MB\n", (real_t)(params->maxmemory/(1024.0*1024.0)));
-
-#ifndef MACOS
-  {
-    struct rusage usage;
-    getrusage(RUSAGE_SELF, &usage);
-    printf("  rusage.ru_maxrss:\t\t %7.3"PRREAL" MB\n", (real_t)(usage.ru_maxrss/(1024.0)));
-  }
-  printf("  proc/self/stat/VmPeak:\t %7.3"PRREAL" MB\n", (real_t)gk_GetProcVmPeak()/(1024.0*1024.0));
-#endif
-
   printf("******************************************************************************\n");
+
 }

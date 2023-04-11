@@ -147,7 +147,7 @@ void AllocateKWayPartitionMemory(ctrl_t *ctrl, graph_t *graph)
 
 /*************************************************************************/
 /*! This function computes the initial id/ed  for cut-based partitioning */
-/*************************************************************************/
+/**************************************************************************/
 void ComputeKWayPartitionParams(ctrl_t *ctrl, graph_t *graph)
 {
   idx_t i, j, k, l, nvtxs, ncon, nparts, nbnd, mincut, me, other;
@@ -209,7 +209,7 @@ void ComputeKWayPartitionParams(ctrl_t *ctrl, graph_t *graph)
           if (myrinfo->ed > 0) {
             mincut += myrinfo->ed;
 
-            myrinfo->inbr = cnbrpoolGetNext(ctrl, xadj[i+1]-xadj[i]);
+            myrinfo->inbr = cnbrpoolGetNext(ctrl, xadj[i+1]-xadj[i]+1);
             mynbrs        = ctrl->cnbrpool + myrinfo->inbr;
 
             for (j=xadj[i]; j<xadj[i+1]; j++) {
@@ -271,7 +271,7 @@ void ComputeKWayPartitionParams(ctrl_t *ctrl, graph_t *graph)
           if (myrinfo->ned > 0) { 
             mincut += myrinfo->ned;
 
-            myrinfo->inbr = vnbrpoolGetNext(ctrl, xadj[i+1]-xadj[i]);
+            myrinfo->inbr = vnbrpoolGetNext(ctrl, xadj[i+1]-xadj[i]+1);
             mynbrs        = ctrl->vnbrpool + myrinfo->inbr;
 
             for (j=xadj[i]; j<xadj[i+1]; j++) {
@@ -331,16 +331,6 @@ void ProjectKWayPartition(ctrl_t *ctrl, graph_t *graph)
   cgraph = graph->coarser;
   cwhere = cgraph->where;
 
-  if (ctrl->objtype == METIS_OBJTYPE_CUT) {
-    ASSERT(CheckBnd2(cgraph));
-  }
-  else {
-    ASSERT(cgraph->minvol == ComputeVolume(cgraph, cgraph->where));
-  }
-
-  /* free the coarse graph's structure (reduce maxmem) */
-  FreeSData(cgraph);
-
   nvtxs   = graph->nvtxs;
   cmap    = graph->cmap;
   xadj    = graph->xadj;
@@ -358,6 +348,7 @@ void ProjectKWayPartition(ctrl_t *ctrl, graph_t *graph)
   /* Compute the required info for refinement */
   switch (ctrl->objtype) {
     case METIS_OBJTYPE_CUT:
+      ASSERT(CheckBnd2(cgraph));
       {
         ckrinfo_t *myrinfo;
         cnbr_t *mynbrs;
@@ -386,7 +377,7 @@ void ProjectKWayPartition(ctrl_t *ctrl, graph_t *graph)
             myrinfo->inbr = -1;
           }
           else { /* Potentially an interface node */
-            myrinfo->inbr = cnbrpoolGetNext(ctrl, iend-istart);
+            myrinfo->inbr = cnbrpoolGetNext(ctrl, iend-istart+1);
             mynbrs        = ctrl->cnbrpool + myrinfo->inbr;
 
             me = where[i];
@@ -412,7 +403,7 @@ void ProjectKWayPartition(ctrl_t *ctrl, graph_t *graph)
       
             /* Remove space for edegrees if it was interior */
             if (ted == 0) { 
-              ctrl->nbrpoolcpos -= gk_min(nparts, iend-istart);
+              ctrl->nbrpoolcpos -= iend-istart+1;
               myrinfo->inbr      = -1;
             }
             else {
@@ -426,6 +417,7 @@ void ProjectKWayPartition(ctrl_t *ctrl, graph_t *graph)
         }
       
         graph->nbnd = nbnd;
+
       }
       ASSERT(CheckBnd2(graph));
       break;
@@ -434,6 +426,8 @@ void ProjectKWayPartition(ctrl_t *ctrl, graph_t *graph)
       {
         vkrinfo_t *myrinfo;
         vnbr_t *mynbrs;
+
+        ASSERT(cgraph->minvol == ComputeVolume(cgraph, cgraph->where));
 
         /* go through and project partition and compute id/ed for the nodes */
         for (i=0; i<nvtxs; i++) {
@@ -455,7 +449,7 @@ void ProjectKWayPartition(ctrl_t *ctrl, graph_t *graph)
             myrinfo->inbr = -1;
           }
           else { /* Potentially an interface node */
-            myrinfo->inbr = vnbrpoolGetNext(ctrl, iend-istart);
+            myrinfo->inbr = vnbrpoolGetNext(ctrl, iend-istart+1);
             mynbrs        = ctrl->vnbrpool + myrinfo->inbr;
 
             me = where[i];
@@ -482,7 +476,7 @@ void ProjectKWayPartition(ctrl_t *ctrl, graph_t *graph)
       
             /* Remove space for edegrees if it was interior */
             if (ted == 0) { 
-              ctrl->nbrpoolcpos -= gk_min(nparts, iend-istart);
+              ctrl->nbrpoolcpos -= iend-istart+1;
               myrinfo->inbr = -1;
             }
             else {
@@ -506,6 +500,7 @@ void ProjectKWayPartition(ctrl_t *ctrl, graph_t *graph)
   icopy(nparts*graph->ncon, cgraph->pwgts, graph->pwgts);
 
   FreeGraph(&graph->coarser);
+  graph->coarser = NULL;
 
   WCOREPOP;
 }
@@ -530,7 +525,7 @@ void ComputeKWayBoundary(ctrl_t *ctrl, graph_t *graph, idx_t bndtype)
       /* Compute the boundary */
       if (bndtype == BNDTYPE_REFINE) {
         for (i=0; i<nvtxs; i++) {
-          if (graph->ckrinfo[i].ed > 0 && graph->ckrinfo[i].ed-graph->ckrinfo[i].id >= 0)
+          if (graph->ckrinfo[i].ed-graph->ckrinfo[i].id >= 0) 
             BNDInsert(nbnd, bndind, bndptr, i);
         }
       }
@@ -671,7 +666,7 @@ void ComputeKWayVolGains(ctrl_t *ctrl, graph_t *graph)
 
 /*************************************************************************/
 /*! This function checks if the partition weights are within the balance
-constraints */
+contraints */
 /*************************************************************************/
 int IsBalanced(ctrl_t *ctrl, graph_t *graph, real_t ffactor)
 {

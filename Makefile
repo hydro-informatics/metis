@@ -6,12 +6,11 @@ assert     = not-set
 assert2    = not-set
 debug      = not-set
 gprof      = not-set
-valgrind   = not-set
 openmp     = not-set
+prefix     = ~/telemac/optionals/metis-5.1.0/build/
+gklib_path = not-set
 shared     = not-set
-cc         = not-set
-prefix     = ~/local
-gklib_path = ~/local
+cc         = gcc
 
 
 # Basically proxies everything to the builddir cmake.
@@ -23,16 +22,16 @@ REALWIDTH = "\#define REALTYPEWIDTH 32"
 
 # Process configuration options.
 CONFIG_FLAGS = -DCMAKE_VERBOSE_MAKEFILE=1
-ifneq ($(gklib_path), not-set)
-    CONFIG_FLAGS += -DGKLIB_PATH=$(abspath $(gklib_path))
+ifeq ($(gklib_path), not-set)
+    gklib_path = GKlib
 endif
-ifneq ($(prefix), not-set)
-    CONFIG_FLAGS += -DCMAKE_INSTALL_PREFIX=$(prefix)
-endif
+CONFIG_FLAGS += -DGKLIB_PATH=$(abspath $(gklib_path))
 ifneq ($(i64), not-set)
+    CONFIG_FLAGS += -DIDX64=$(i64)
     IDXWIDTH  = "\#define IDXTYPEWIDTH 64"
 endif
 ifneq ($(r64), not-set)
+    CONFIG_FLAGS += -DREAL64=$(r64)
     REALWIDTH = "\#define REALTYPEWIDTH 64"
 endif
 ifneq ($(gdb), not-set)
@@ -50,11 +49,11 @@ endif
 ifneq ($(gprof), not-set)
     CONFIG_FLAGS += -DGPROF=$(gprof)
 endif
-ifneq ($(valgrind), not-set)
-    CONFIG_FLAGS += -DVALGRIND=$(valgrind)
-endif
 ifneq ($(openmp), not-set)
     CONFIG_FLAGS += -DOPENMP=$(openmp)
+endif
+ifneq ($(prefix), not-set)
+    CONFIG_FLAGS += -DCMAKE_INSTALL_PREFIX=$(prefix)
 endif
 ifneq ($(shared), not-set)
     CONFIG_FLAGS += -DSHARED=1

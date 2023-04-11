@@ -17,8 +17,9 @@ METIS is a set of serial programs for partitioning graphs, partitioning finite e
 ##  Downloading METIS
 
 You can download METIS by simply cloning it using the command:
+
 ```
-git clone https://github.com/KarypisLab/METIS.git
+git clone https://github.com/hydro-informatics/metis.git
 ```
 
 ## Building standalone METIS binaries and library
@@ -35,8 +36,14 @@ sudo apt-get install build-essential
 sudo apt-get install cmake
 ```
 
-In addition, you need to download and install
-[GKlib](https://github.com/KarypisLab/GKlib) by following the instructions there. 
+[GKlib](https://github.com/KarypisLab/GKlib) is already installed, but needs to be compiled (adapt `DIR/TO` to your local directories):
+
+```
+cd metis/GKlib
+make config cc=gcc prefix=/DIR/TO/telemac/v8p4r0/optionals/metis/GKlib openmp=set
+make
+make install
+```
 
 
 ### Building and installing METIS  

@@ -51,6 +51,10 @@ idx_t Match_JC(ctrl_t *ctrl, graph_t *graph);
 void PrintCGraphStats(ctrl_t *ctrl, graph_t *graph);
 void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs, 
          idx_t *match);
+void CreateCoarseGraphNoMask(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs, 
+         idx_t *match);
+void CreateCoarseGraphPerm(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs, 
+         idx_t *match, idx_t *perm);
 graph_t *SetupCoarseGraph(graph_t *graph, idx_t cnvtxs, int dovsize);
 void ReAdjustMemory(ctrl_t *ctrl, graph_t *graph, graph_t *cgraph);
 
@@ -121,7 +125,6 @@ void SetupGraph_label(graph_t *graph);
 graph_t *SetupSplitGraph(graph_t *graph, idx_t snvtxs, idx_t snedges);
 graph_t *CreateGraph(void);
 void InitGraph(graph_t *graph);
-void FreeSData(graph_t *graph);
 void FreeRData(graph_t *graph);
 void FreeGraph(graph_t **graph);
 void graph_WriteToDisk(ctrl_t *ctrl, graph_t *graph);
@@ -145,6 +148,7 @@ void InitKWayPartitioning(ctrl_t *ctrl, graph_t *graph);
 idx_t BlockKWayPartitioning(ctrl_t *ctrl, graph_t *graph, idx_t *part);
 idx_t GrowMultisection(ctrl_t *ctrl, graph_t *graph, idx_t nparts, idx_t *where);
 void BalanceAndRefineLP(ctrl_t *ctrl, graph_t *graph, idx_t nparts, idx_t *where);
+void BalanceAndRefine(ctrl_t *ctrl, graph_t *graph, idx_t nparts, idx_t *where);
 
 
 /* kwayfm.c */
@@ -336,7 +340,7 @@ int metis_rcode(int sigrval);
 
 /* wspace.c */
 void AllocateWorkSpace(ctrl_t *ctrl, graph_t *graph);
-void AllocateRefinementWorkSpace(ctrl_t *ctrl, idx_t nbrpoolsize_max, idx_t nbrpoolsize);
+void AllocateRefinementWorkSpace(ctrl_t *ctrl, idx_t nbrpoolsize);
 void FreeWorkSpace(ctrl_t *ctrl);
 void *wspacemalloc(ctrl_t *ctrl, size_t nbytes);
 void wspacepush(ctrl_t *ctrl);
