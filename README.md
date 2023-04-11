@@ -1,9 +1,18 @@
 # METIS 
 
-METIS is a set of serial programs for partitioning graphs, partitioning finite element meshes, 
-and producing fill reducing orderings for sparse matrices. The algorithms implemented in 
-METIS are based on the multilevel recursive-bisection, multilevel k-way, and multi-constraint 
-partitioning schemes developed in our lab.
+***
+
+**NOTE**: This fork serves for compiling Telemac as described on [https://hydro-informatics/get-started/install-telemac](https://hydro-informatics.com/get-started/install-telemac.html). The differences comapred with original version developed on [KarypisLab/METIS](https://github.com/KarypisLab/METIS), this repository:
+
+* Provides Metis version 5.1.1
+* Includes GKlib files
+* Has a Telemac-adapted Makefile
+
+Additionally, there is only a `main` branch available here, which corresponds to a renamed the `master` branch.
+
+***
+
+METIS is a set of serial programs for partitioning graphs, partitioning finite element meshes, and producing fill reducing orderings for sparse matrices. The algorithms implemented in METIS are based on the multilevel recursive-bisection, multilevel k-way, and multi-constraint partitioning schemes developed in our lab.
 
 ##  Downloading METIS
 
